@@ -110,26 +110,9 @@ namespace firepitfix
             {
                 if (!__instance.Block.Code.Path.Contains("construct"))
                 {
-                    __instance.Api.Logger.Error("should re initalize listeners here");
+                    __instance.Api.Logger.Error("should re initalize listeners here if firepit was previously constructed");
                     //     __instance.RegisterGameTickListener(__instance.GetMethod("OnBurnTick").CreateDelegate<Action<float>>(), 100);
                     //   __instance.RegisterGameTickListener(__instance.GetMethod("On500msTick").CreateDelegate<Action<float>>(), 500);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(BlockEntityFirepit), "OnSlotModifid")]
-        public static class PatchBlockEntityFirepit3
-        {
-            [HarmonyPrefix]
-            public static void Prefix(BlockEntityFirepit __instance)
-            {
-                if (!__instance.Block.Code.Path.Contains("construct"))
-                {
-                    __instance.Api.Logger.Error("should re initalize listeners here");
-                 //   __instance.RegisterGameTickListener(__instance.GetMethod("OnBurnTick").CreateDelegate<Action<float>>(), 100);
-               //     __instance.RegisterGameTickListener(__instance.GetMethod("On500msTick").CreateDelegate<Action<float>>(), 500);
-
-                    //__instance.RegisterGameTickListener(OnBurnTick, 100);
-                    //__instance.RegisterGameTickListener(On500msTick, 500);
                 }
             }
         }

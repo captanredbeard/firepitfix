@@ -22,7 +22,7 @@ namespace firepitfix
             return side == EnumAppSide.Server;
         }
 
-
+        //Patch firepits upon startup
         public override void StartServerSide(ICoreServerAPI api)
         {
             if (!Harmony.HasAnyPatches(Mod.Info.ModID))
@@ -82,14 +82,17 @@ namespace firepitfix
             }
         }
         */
-        
-        public static MethodInfo Me = AccessTools.DeclaredMethod(typeof(BlockEntityFirepit),"OnBurnTick");
+
+
+        //attempts at using AccessTools to get the method actions
+        public static MethodInfo OnBurnTick = AccessTools.DeclaredMethod(typeof(BlockEntityFirepit),"OnBurnTick");
         public static MethodInfo On500msTick = AccessTools.DeclaredMethod(typeof(BlockEntityFirepit), "On500msTick");
 
         //    private Action<float> OnBurnTick = AccessTools.Method(typeof(BlockEntityFirepit), "OnBurnTick").CreateDelegate<Action<float>>();
         //  private Action<float> On500msTick = AccessTools.Method(typeof(BlockEntityFirepit), "On500msTick").CreateDelegate<Action<float>>();
 
 
+        //remove listerners on initialize if firepit is in construction stage
         [HarmonyPatch(typeof(BlockEntityFirepit), "Initialize")]
         public static class PatchBlockEntityFirepit
         {
@@ -102,6 +105,8 @@ namespace firepitfix
                 }
             }
         }
+
+        //using right click interaction to check if listeners should be re added
         [HarmonyPatch(typeof(BlockEntityFirepit), "OnPlayerRightClick")]
         public static class PatchBlockEntityFirepit2
         {
@@ -110,7 +115,7 @@ namespace firepitfix
             {
                 if (!__instance.Block.Code.Path.Contains("construct"))
                 {
-                    __instance.Api.Logger.Error("should re initalize listeners here if firepit was previously constructed");
+                    __instance.Api.Logger.Error("should re initalize listeners here only if firepit was previously constructed, and missing listeners");
                     //     __instance.RegisterGameTickListener(__instance.GetMethod("OnBurnTick").CreateDelegate<Action<float>>(), 100);
                     //   __instance.RegisterGameTickListener(__instance.GetMethod("On500msTick").CreateDelegate<Action<float>>(), 500);
                 }

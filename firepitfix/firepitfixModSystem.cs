@@ -32,7 +32,7 @@ namespace firepitfix
             }
         }
 
-
+        /*
         [HarmonyPatch]
         public class PatchBlockEntityFirepit
         {
@@ -79,6 +79,46 @@ namespace firepitfix
                     //__instance.UpdateRenderer();
                 }
                 return false;
+            }
+        }
+        */
+
+        [HarmonyPatch(typeof(BlockEntityFirepit), "Initialize")]
+        public static class PatchBlockEntityFirepit
+        {
+            [HarmonyPostfix]
+            public static void Postfix(BlockEntityFirepit __instance, InventorySmelting ___inventory)
+            {
+                if (__instance.Block.Code.Path.Contains("construct"))
+                {
+                    __instance.UnregisterAllTickListeners();
+                }
+            }
+        }
+        [HarmonyPatch(typeof(BlockEntityFirepit), "OnPlayerRightClick")]
+        public static class PatchBlockEntityFirepit2
+        {
+            [HarmonyPrefix]
+            public static void Prefix(BlockEntityFirepit __instance, InventorySmelting ___inventory)
+            {
+                if (__instance.Block.Code.Path.Contains("construct"))
+                {
+                    __instance.RegisterGameTickListener(OnBurnTick, 100);
+                    __instance.RegisterGameTickListener(On500msTick, 500);
+                }
+            }
+        }
+        [HarmonyPatch(typeof(BlockEntityFirepit), "OnSlotModifid")]
+        public static class PatchBlockEntityFirepit3
+        {
+            [HarmonyPrefix]
+            public static void Prefix(BlockEntityFirepit __instance, InventorySmelting ___inventory)
+            {
+                if (__instance.Block.Code.Path.Contains("construct"))
+                {
+                    __instance.RegisterGameTickListener(OnBurnTick, 100);
+                    __instance.RegisterGameTickListener(On500msTick, 500);
+                }
             }
         }
     }

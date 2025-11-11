@@ -82,12 +82,19 @@ namespace firepitfix
             }
         }
         */
+        
+        public static MethodInfo Me = AccessTools.DeclaredMethod(typeof(BlockEntityFirepit),"OnBurnTick");
+        public static MethodInfo On500msTick = AccessTools.DeclaredMethod(typeof(BlockEntityFirepit), "On500msTick");
+
+        //    private Action<float> OnBurnTick = AccessTools.Method(typeof(BlockEntityFirepit), "OnBurnTick").CreateDelegate<Action<float>>();
+        //  private Action<float> On500msTick = AccessTools.Method(typeof(BlockEntityFirepit), "On500msTick").CreateDelegate<Action<float>>();
+
 
         [HarmonyPatch(typeof(BlockEntityFirepit), "Initialize")]
         public static class PatchBlockEntityFirepit
         {
             [HarmonyPostfix]
-            public static void Postfix(BlockEntityFirepit __instance, InventorySmelting ___inventory)
+            public static void Postfix(BlockEntityFirepit __instance)
             {
                 if (__instance.Block.Code.Path.Contains("construct"))
                 {
@@ -99,12 +106,12 @@ namespace firepitfix
         public static class PatchBlockEntityFirepit2
         {
             [HarmonyPrefix]
-            public static void Prefix(BlockEntityFirepit __instance, InventorySmelting ___inventory)
+            public static void Prefix(BlockEntityFirepit __instance)
             {
-                if (__instance.Block.Code.Path.Contains("construct"))
+                if (!__instance.Block.Code.Path.Contains("construct"))
                 {
-                    __instance.RegisterGameTickListener(OnBurnTick, 100);
-                    __instance.RegisterGameTickListener(On500msTick, 500);
+                    __instance.RegisterGameTickListener(__instance.GetMethod("OnBurnTick").CreateDelegate<Action<float>>(), 100);
+                    __instance.RegisterGameTickListener(__instance.GetMethod("On500msTick").CreateDelegate<Action<float>>(), 500);
                 }
             }
         }
@@ -112,12 +119,14 @@ namespace firepitfix
         public static class PatchBlockEntityFirepit3
         {
             [HarmonyPrefix]
-            public static void Prefix(BlockEntityFirepit __instance, InventorySmelting ___inventory)
+            public static void Prefix(BlockEntityFirepit __instance)
             {
-                if (__instance.Block.Code.Path.Contains("construct"))
+                if (!__instance.Block.Code.Path.Contains("construct"))
                 {
-                    __instance.RegisterGameTickListener(OnBurnTick, 100);
-                    __instance.RegisterGameTickListener(On500msTick, 500);
+                    __instance.RegisterGameTickListener(__instance.GetMethod("OnBurnTick").CreateDelegate<Action<float>>(), 100);
+                    __instance.RegisterGameTickListener(__instance.GetMethod("On500msTick").CreateDelegate<Action<float>>(), 500);
+                    //__instance.RegisterGameTickListener(OnBurnTick, 100);
+                    //__instance.RegisterGameTickListener(On500msTick, 500);
                 }
             }
         }
